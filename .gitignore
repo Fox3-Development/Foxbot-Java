@@ -1,0 +1,5 @@
+.env
+/shelf/
+/workspace.xml
+/out/
+/target/
