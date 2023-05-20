@@ -6,7 +6,7 @@
 
     <groupId>com.fox3ms</groupId>
     <artifactId>Foxbot</artifactId>
-    <version>0.1.0-beta.tc-1</version>
+    <version>0.1.1-beta.rc.1</version>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
@@ -55,40 +55,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-dependency-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>copy-dependencies</id>-->
-<!--                        <phase>prepare-package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>copy-dependencies</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <outputDirectory>-->
-<!--                                ${project.build.directory}/libs-->
-<!--                            </outputDirectory>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <version>3.3.0</version>-->
-<!--                <configuration>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <addClasspath>true</addClasspath>-->
-<!--                            <classpathPrefix>libs/</classpathPrefix>-->
-<!--                            <mainClass>-->
-<!--                                com.fox3ms.Foxbot-->
-<!--                            </mainClass>-->
-<!--                        </manifest>-->
-<!--                    </archive>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 

@@ -1,4 +1,4 @@
-package events;
+package com.fox3ms.events;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -14,7 +14,7 @@ public class MemberJoinEventListener extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         super.onGuildMemberJoin(event);
-        TextChannel welcomeChannel = event.getGuild().getTextChannelById("1106258124396040194");
+        TextChannel welcomeChannel = event.getGuild().getTextChannelById("814940459134484514");
         String joinedUser = event.getUser().getAsMention();
         EmbedBuilder welcomeEmbed = new EmbedBuilder();
             welcomeEmbed.setColor(Color.RED);

@@ -1,4 +1,4 @@
-package events;
+package com.fox3ms.events;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -102,8 +102,8 @@ public class InteractionEventListener extends ListenerAdapter {
             case "complete" -> {
                 Member userValue = Objects.requireNonNull(event.getOption("user")).getAsMember();
                 String serverNumberValue = Objects.requireNonNull(event.getOption("server-number")).getAsString();
-                Role newCustRole = Objects.requireNonNull(event.getGuild()).getRoleById("1106263934387884183");
-                Role custRole = event.getGuild().getRoleById("1106263980676218911");
+                Role newCustRole = Objects.requireNonNull(event.getGuild()).getRoleById("992687491029151774");
+                Role custRole = event.getGuild().getRoleById("814960014992474172");
 
                 if (userValue != null) {
                     assert custRole != null;
@@ -181,7 +181,7 @@ public class InteractionEventListener extends ListenerAdapter {
             }
             case "rbID" -> {
                 Member interactionUser = buttonEvent.getMember();
-                Role newCustRole = Objects.requireNonNull(buttonEvent.getGuild()).getRoleById("1106263934387884183");
+                Role newCustRole = Objects.requireNonNull(buttonEvent.getGuild()).getRoleById("992687491029151774");
 
                 assert interactionUser != null;
                 if (interactionUser.getRoles().stream().anyMatch(role -> role.getName().equals("Customers")) || interactionUser.getRoles().stream().anyMatch(role -> role.getName().equals("New Customer"))) {
@@ -189,11 +189,8 @@ public class InteractionEventListener extends ListenerAdapter {
                 } else if (interactionUser.getRoles().stream().noneMatch(role -> role.getName().equals("New Customer"))) {
                     assert newCustRole != null;
                     buttonEvent.getGuild().addRoleToMember(interactionUser, newCustRole).queue();
-                    buttonEvent.reply("You have accepted the server rules. Please head over to the <#1106258649988464770> to request onboarding!").setEphemeral(true).queue();
+                    buttonEvent.reply("You have accepted the server rules. Please head over to the <#992255774036328488> to request onboarding!").setEphemeral(true).queue();
                 }
-//                if () {
-//                    buttonEvent.reply("You've already accepted the rules!").setEphemeral(true).queue();
-//                }
             }
             case "closeID" -> {
                 buttonEvent.reply("This ticket is closing in 5 seconds!").setEphemeral(false).queue();
@@ -279,6 +276,10 @@ public class InteractionEventListener extends ListenerAdapter {
                 ChannelManager<TextChannel, TextChannelManager> onboardManager = onboardTicketChannel.getManager().putPermissionOverride(Objects.requireNonNull(modalEvent.getMember()), 3072L, 8192L).putPermissionOverride(modalEvent.getGuild().getRolesByName("@everyone", true).get(0), 0L, 1024L);
                 onboardManager.queue();
 
+                TextChannel alertChannel = modalEvent.getGuild().getTextChannelsByName("fox3-alerts", true).get(0);
+                String staffID = Objects.requireNonNull(modalEvent.getGuild().getRoleById("1080684124693614654")).getAsMention();
+                alertChannel.sendMessage(String.format("%s, **New Onboarding Alert!** | Ticket-" + onboardingID + " | Created by: " + interactionUserID, staffID)).queue();
+
                 modalEvent.reply("Onboarding Request created! Click " + onboardTicketChannel.getAsMention() + " to open your ticket!").setEphemeral(true).queue();
                 onboardTicketChannel.sendMessageEmbeds(onboardPanelEmbed.build()).complete();
             }
@@ -309,6 +310,10 @@ public class InteractionEventListener extends ListenerAdapter {
                 ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager().putPermissionOverride(Objects.requireNonNull(modalEvent.getMember()), 3072L, 8192L).putPermissionOverride(modalEvent.getGuild().getRolesByName("@everyone", true).get(0), 0L, 1024L);
                 ticketManager.queue();
 
+                TextChannel alertChannel = modalEvent.getGuild().getTextChannelsByName("fox3-alerts", true).get(0);
+                String staffID = Objects.requireNonNull(modalEvent.getGuild().getRoleById("1080684124693614654")).getAsMention();
+                alertChannel.sendMessage(String.format("%s, **New Ticket Alert!** | Ticket-" + ticketID + " | Created by: " + interactionUserID, staffID)).queue();
+
                 modalEvent.reply("Support Ticket Created! Click " + ticketChannel.getAsMention() + " to open your ticket!").setEphemeral(true).queue();
                 ticketChannel.sendMessageEmbeds(ticketPanelEmbed.build()).setActionRow(closeReasonButton, closeButton, claimButton).complete();
             }
@@ -333,7 +338,6 @@ public class InteractionEventListener extends ListenerAdapter {
                     .addComponents(ActionRow.of(complaintInput))
                     .build();
             contextEvent.replyModal(ticketModal).queue();
-//            contextEvent.reply("A new ticket was opened!").setEphemeral(true).queue();
         }
     }
 }
