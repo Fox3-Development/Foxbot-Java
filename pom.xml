@@ -6,13 +6,20 @@
 
     <groupId>com.fox3ms</groupId>
     <artifactId>Foxbot</artifactId>
-    <version>0.1.1-beta.rc.1</version>
+    <version>0.1.3-beta-rc.1</version>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <repositories>
+            <repository>
+                <id>jitpack.io</id>
+                <url>https://jitpack.io</url>
+            </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -35,6 +42,16 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
             <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Ryzeon</groupId>
+            <artifactId>discord-html-transcripts</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 

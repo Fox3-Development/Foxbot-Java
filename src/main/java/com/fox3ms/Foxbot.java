@@ -1,9 +1,11 @@
 package com.fox3ms;
 
-import com.fox3ms.events.InteractionEventListener;
-import com.fox3ms.events.MemberJoinEventListener;
-import com.fox3ms.events.MemberLeaveEventListener;
-import com.fox3ms.events.ReadyEventListener;
+import com.fox3ms.events.Handlers.ButtonHandler;
+import com.fox3ms.events.Handlers.CommandHandler;
+import com.fox3ms.events.DiscordUtils.MemberJoinEventListener;
+import com.fox3ms.events.DiscordUtils.MemberLeaveEventListener;
+import com.fox3ms.events.DiscordUtils.ReadyEventListener;
+import com.fox3ms.events.Handlers.ModalHandler;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -22,8 +24,14 @@ public class Foxbot {
         jdaBuilder.setMemberCachePolicy(MemberCachePolicy.ALL);
         JDA jda = jdaBuilder
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS)
-                .addEventListeners(new ReadyEventListener(), new InteractionEventListener(), new MemberJoinEventListener(), new MemberLeaveEventListener())
-                .build();
+                .addEventListeners(
+                        new ReadyEventListener(),
+                        new CommandHandler(),
+                        new MemberJoinEventListener(),
+                        new MemberLeaveEventListener(),
+                        new ButtonHandler(),
+                        new ModalHandler()
+                ).build();
         jda.getPresence().setActivity(Activity.playing("Ready to Fly!"));
 
         jda.upsertCommand("cancel-request", "Moves the ticket to the 'Cancellation Requests' Category").setGuildOnly(true).queue();

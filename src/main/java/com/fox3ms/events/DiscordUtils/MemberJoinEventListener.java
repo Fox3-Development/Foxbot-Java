@@ -1,4 +1,4 @@
-package com.fox3ms.events;
+package com.fox3ms.events.DiscordUtils;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
