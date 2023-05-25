@@ -23,7 +23,7 @@ public class ReadyEventListener extends ListenerAdapter {
                     TextChannel scheduleChannel = event.getJDA().getTextChannelsByName("general", true).get(0);
                     String eventLink = "https://discord.gg/rqHFTBR8?event=1108181089232633967";
                     scheduleChannel.sendMessage(String.format("Have you heard about the **Fox3 Top Gun Tournament**? Check out the event to sign up! %s", eventLink)).queue();
-                }, 0, 3, TimeUnit.HOURS);
+                }, 0, 1, TimeUnit.DAYS);
                 firstReady = false;
             }
         } catch ( Exception e) {

@@ -6,7 +6,7 @@
 
     <groupId>com.fox3ms</groupId>
     <artifactId>Foxbot</artifactId>
-    <version>0.1.3-beta-rc.1</version>
+    <version>0.1.4-beta-rc.1</version>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>

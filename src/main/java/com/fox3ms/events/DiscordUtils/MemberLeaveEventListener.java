@@ -27,14 +27,14 @@ public class MemberLeaveEventListener extends ListenerAdapter {
                 rolesMentionable.append(role.getAsMention()).append(" ");
             }
 
-            EmbedBuilder leaveEmbed = new EmbedBuilder();
-                leaveEmbed.setColor(Color.RED);
-                leaveEmbed.setAuthor(event.getMember().getEffectiveName(), null, member.getUser().getAvatarUrl());
-                leaveEmbed.setTitle("Member left");
-                leaveEmbed.setDescription("``" + user + "``" + " has left the server");
-                leaveEmbed.addField("User's Roles", rolesMentionable.toString(), false);
-                leaveEmbed.setThumbnail("https://static.wixstatic.com/media/54345b_9266a83269ec41dbadf793899fba1030~mv2.png/v1/fill/w_433,h_243,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/RedCard.png");
-                leaveEmbed.setTimestamp(OffsetDateTime.now());
+            EmbedBuilder leaveEmbed = new EmbedBuilder()
+                .setColor(Color.RED)
+                .setAuthor(event.getMember().getEffectiveName(), null, member.getUser().getAvatarUrl())
+                .setTitle("Member left")
+                .setDescription("``" + user + "``" + " has left the server")
+                .addField("User's Roles", rolesMentionable.toString(), false)
+                .setThumbnail("https://static.wixstatic.com/media/54345b_9266a83269ec41dbadf793899fba1030~mv2.png/v1/fill/w_433,h_243,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/RedCard.png")
+                .setTimestamp(OffsetDateTime.now());
 
             assert auditLogsChannel != null;
             auditLogsChannel.sendMessageEmbeds(leaveEmbed.build()).complete();

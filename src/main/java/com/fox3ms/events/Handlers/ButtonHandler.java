@@ -101,10 +101,10 @@ public class ButtonHandler extends ListenerAdapter {
                     String mentionUser = interactionUser.getAsMention();
 
 
-                    EmbedBuilder claimEmbed =new EmbedBuilder();
-                    claimEmbed.setColor(Color.BLUE);
-                    claimEmbed.setTitle("Claimed Ticket");
-                    claimEmbed.setDescription("Your ticket will be handled by " + mentionUser);
+                    EmbedBuilder claimEmbed =new EmbedBuilder()
+                        .setColor(Color.BLUE)
+                        .setTitle("Claimed Ticket")
+                        .setDescription("Your ticket will be handled by " + mentionUser);
 
                     Message message = event.getMessage();
 
