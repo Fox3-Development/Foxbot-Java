@@ -9,8 +9,10 @@ import com.fox3ms.events.Handlers.ModalHandler;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -32,16 +34,27 @@ public class Foxbot {
                         new ButtonHandler(),
                         new ModalHandler()
                 ).build();
-        jda.getPresence().setActivity(Activity.playing("Ready to Fly!"));
 
-        jda.upsertCommand("cancel-request", "Moves the ticket to the 'Cancellation Requests' Category").setGuildOnly(true).queue();
-        jda.upsertCommand("setup", "Initializes all sticky messages").setGuildOnly(true).queue();
-        jda.upsertCommand("complete", "Complete customer onboarding. Assigns \"Customer\" role. Closes onboarding ticket.")
-                .addOption(OptionType.USER, "user", "This is the user you want to complete onboarding for", true)
-                .addOption(OptionType.STRING, "server-number", "Provide the user's server number", true)
-                .setGuildOnly(true).queue();
+        jda.getPresence().setActivity(Activity.playing("Ready to Fly!")); //Sets the online presence for the bot
+
         jda.updateCommands().addCommands(
+                Commands.slash("setup", "Initializes system embeds and buttons")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                        .setGuildOnly(true),
+                Commands.slash("cancel-request", "Moves the ticket to the 'Cancellation Requests' Category")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                        .setGuildOnly(true),
+                Commands.slash("complete", "Completes customer onboarding")
+                        .addOption(OptionType.USER, "user", "The target user to complete onboarding for")
+                        .addOption(OptionType.STRING, "server-number", "Provide the customer's server number")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                        .setGuildOnly(true),
+                Commands.slash("search", "Searches for and displays customer info") // TODO: #1 create jdbc connection and test searching for customers
+                        .addOption(OptionType.USER, "customer-name", "User to search for")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                        .setGuildOnly(true),
                 Commands.context(Command.Type.USER, "Open a Ticket")
+                        .setGuildOnly(true)
         ).queue();
     }
 }

@@ -1,5 +1,6 @@
 package com.fox3ms.events.Handlers;
 
+import com.fox3ms.Utils.JDBC;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -16,6 +17,7 @@ import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.sql.Connection;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -136,6 +138,18 @@ public class CommandHandler extends ListenerAdapter {
                 }
                 event.getChannel().delete().queueAfter(5, TimeUnit.SECONDS);
                 }
+                // TODO: #2, fully build sql connection and search for a specified user returning the results in an ephemeral message
+
+            //not implemented yet
+//                case "search" -> {
+//                    JDBC connector = new JDBC();
+//                    Connection conn = connector.getConnection();
+//                    String userValue = Objects.requireNonNull(event.getOption("customer-name")).getAsUser().getAsTag();
+//
+//                    try {
+//                        String query = "SELECT * FROM "
+//                    }
+//                }
             }
         }
 
