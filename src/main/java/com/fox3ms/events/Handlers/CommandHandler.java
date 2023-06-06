@@ -1,6 +1,7 @@
 package com.fox3ms.events.Handlers;
 
-import com.fox3ms.Utils.JDBC;
+import com.fox3ms.Utils.DatabaseConnector;
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -17,7 +18,7 @@ import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.sql.Connection;
+import java.sql.*;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +26,10 @@ import java.util.concurrent.TimeUnit;
 public class CommandHandler extends ListenerAdapter {
 
     String newLine = System.lineSeparator();
+    static Dotenv dotenv = Dotenv.load();
+    private static final String URL = dotenv.get("URL");
+    private static final String DBUSER = dotenv.get("DBUSER");
+    private static final String DBPASS = dotenv.get("DBPASS");
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
@@ -139,17 +144,56 @@ public class CommandHandler extends ListenerAdapter {
                 event.getChannel().delete().queueAfter(5, TimeUnit.SECONDS);
                 }
                 // TODO: #2, fully build sql connection and search for a specified user returning the results in an ephemeral message
+                case "search" -> {
+                // TODO: clean this up later
 
-            //not implemented yet
-//                case "search" -> {
 //                    JDBC connector = new JDBC();
 //                    Connection conn = connector.getConnection();
-//                    String userValue = Objects.requireNonNull(event.getOption("customer-name")).getAsUser().getAsTag();
+                    String userValue = String.valueOf(Objects.requireNonNull(event.getOption("customer-num")));
+
+
 //
 //                    try {
-//                        String query = "SELECT * FROM "
+//                        String query = "SELECT * FROM pub.customers where Cust-Server-Num = ?";
+//                        PreparedStatement statement = conn.prepareStatement(query);
+//                        statement.setString(1, userValue);
+//                        ResultSet resultSet = statement.executeQuery();
+//
+//                        while (resultSet.next()) {
+//                            String serverNum = resultSet.getString("Cust-Server-Num");
+//                            System.out.println("Server Number: " + serverNum);
+//                        }
+//
+////                        resultSet.close();
+////                        stmnt.close();
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
 //                    }
-//                }
+////                    finally {
+////                        connector.closeConnection();
+////                    }
+/*
+Connection connection = DriverManager.getConnection(URL, DBUSER, DBPASS)
+ */
+                    try (Connection connection = DriverManager.getConnection(URL, DBUSER, DBPASS)) {
+                        //Perform db operations
+                        PreparedStatement statement = connection.prepareStatement("SELECT * FROM pub.customers where Cust-Server-Num = ?");
+                        statement.setString(1, userValue);
+                        ResultSet resultSet = statement.executeQuery();
+
+                        //Process results
+                        StringBuilder response = new StringBuilder();
+                        while (resultSet.next()) {
+                            String value = resultSet.getString("Cust-Server-Num");
+                            response.append(value).append("\n");
+                        }
+
+                        event.reply(response.toString()).setEphemeral(true).queue();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        event.reply("An error occurred while connecting to the DB! See logs for more info...").queue();
+                    }
+                }
             }
         }
 

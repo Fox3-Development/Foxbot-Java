@@ -21,7 +21,7 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 public class Foxbot {
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.load();
-        String token = dotenv.get("TOKEN");
+        String token = dotenv.get("TEST_TOKEN");
         JDABuilder jdaBuilder = JDABuilder.createDefault(token);
         jdaBuilder.setMemberCachePolicy(MemberCachePolicy.ALL);
         JDA jda = jdaBuilder
@@ -50,7 +50,7 @@ public class Foxbot {
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
                         .setGuildOnly(true),
                 Commands.slash("search", "Searches for and displays customer info") // TODO: #1 create jdbc connection and test searching for customers
-                        .addOption(OptionType.USER, "customer-name", "User to search for")
+                        .addOption(OptionType.STRING, "customer-num", "User to search for")
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
                         .setGuildOnly(true),
                 Commands.context(Command.Type.USER, "Open a Ticket")
