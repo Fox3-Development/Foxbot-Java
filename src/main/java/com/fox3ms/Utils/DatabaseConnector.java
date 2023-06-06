@@ -5,6 +5,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import com.ddtek.jdbc.openedge.OpenEdgeDriver;
 
 public class DatabaseConnector {
     private Connection connection;
@@ -15,10 +16,14 @@ public class DatabaseConnector {
 
 
     public DatabaseConnector() {
+
         try {
+            Class.forName("com.ddtek.jdbc.openedge.OpenEdgeDriver");
             connection = DriverManager.getConnection(URL, DBUSER, DBPASS);
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -143,38 +143,11 @@ public class CommandHandler extends ListenerAdapter {
                 }
                 event.getChannel().delete().queueAfter(5, TimeUnit.SECONDS);
                 }
-                // TODO: #2, fully build sql connection and search for a specified user returning the results in an ephemeral message
                 case "search" -> {
-                // TODO: clean this up later
+                // TODO: fix error: java.sql.SQLNonTransientConnectionException: [DataDirect][OpenEdge JDBC Driver]Error establishing socket to host and port: x.x.x.x:xxxx. Reason: Connection refused: connect
 
-//                    JDBC connector = new JDBC();
-//                    Connection conn = connector.getConnection();
                     String userValue = String.valueOf(Objects.requireNonNull(event.getOption("customer-num")));
 
-
-//
-//                    try {
-//                        String query = "SELECT * FROM pub.customers where Cust-Server-Num = ?";
-//                        PreparedStatement statement = conn.prepareStatement(query);
-//                        statement.setString(1, userValue);
-//                        ResultSet resultSet = statement.executeQuery();
-//
-//                        while (resultSet.next()) {
-//                            String serverNum = resultSet.getString("Cust-Server-Num");
-//                            System.out.println("Server Number: " + serverNum);
-//                        }
-//
-////                        resultSet.close();
-////                        stmnt.close();
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
-////                    finally {
-////                        connector.closeConnection();
-////                    }
-/*
-Connection connection = DriverManager.getConnection(URL, DBUSER, DBPASS)
- */
                     try (Connection connection = DriverManager.getConnection(URL, DBUSER, DBPASS)) {
                         //Perform db operations
                         PreparedStatement statement = connection.prepareStatement("SELECT * FROM pub.customers where Cust-Server-Num = ?");
@@ -186,6 +159,7 @@ Connection connection = DriverManager.getConnection(URL, DBUSER, DBPASS)
                         while (resultSet.next()) {
                             String value = resultSet.getString("Cust-Server-Num");
                             response.append(value).append("\n");
+                            event.reply("Here is your query response: " + value).queue();
                         }
 
                         event.reply(response.toString()).setEphemeral(true).queue();
