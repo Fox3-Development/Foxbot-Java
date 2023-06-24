@@ -16,7 +16,7 @@ public class ReadyEventListener extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         super.onReady(event);
         System.out.println("I've logged in successfully!");
-        /*try {
+        try {
             if (firstReady) {
                 ScheduledExecutorService messageScheduler = Executors.newScheduledThreadPool(1);
                 messageScheduler.scheduleAtFixedRate(() -> {
@@ -28,7 +28,7 @@ public class ReadyEventListener extends ListenerAdapter {
             }
         } catch ( Exception e) {
             System.out.println("Caught Exception, " + e.getMessage());
-        }*/
+        }
 
     }
 }
