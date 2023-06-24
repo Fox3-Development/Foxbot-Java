@@ -1,0 +1,122 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+#######################################################################
+# Template
+# name: Java CI with Maven
+
+# on:
+#  push:
+#    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
+
+#jobs:
+#  build:
+
+#    runs-on: ubuntu-latest
+
+#    steps:
+#    - uses: actions/checkout@v3
+#  - name: Set up JDK 11
+#      uses: actions/setup-java@v3
+#      with:
+#        java-version: '11'
+#        distribution: 'temurin'
+#        cache: maven
+#    - name: Build with Maven
+#      run: mvn -B package --file pom.xml
+
+    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+#    - name: Update dependency graph
+#      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+###############################################################################################################
+
+name: Java CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'corretto'
+
+      - name: Build with Maven
+        run: mvn clean package
+
+      - name: List Target Directory
+        run: ls -l target
+
+      - name: Get Previous Release Tag
+        id: get_previous_release
+        run: |
+          TAGS=$(git tag)
+          if [[ -z $TAGS ]]; then
+            echo "PREVIOUS_TAG=" >> $GITHUB_ENV
+          else
+            PREVIOUS_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null)
+            echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> $GITHUB_ENV
+          fi
+      - name: Create Release Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.RKTU_GITHUB_TOKEN }}
+        run: |
+          NEW_TAG=v${{ github.run_number }}
+          git tag $NEW_TAG
+          git push origin $NEW_TAG
+      - name: Get Commit History
+        id: commit_history
+        run: |
+          if [[ -n $PREVIOUS_TAG ]]; then
+            COMMIT_HISTORY=$(git log --oneline --no-merges $PREVIOUS_TAG..HEAD)
+            echo "COMMIT_HISTORY=$COMMIT_HISTORY" >> $GITHUB_ENV
+          else
+            COMMIT_HISTORY=$(git log --oneline --no-merges)
+            echo "COMMIT_HISTORY=$COMMIT_HISTORY" >> $GITHUB_ENV
+          fi
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: |
+            Commit history:
+            ${{ env.COMMIT_HISTORY }}
+          draft: false
+          prerelease: false
+
+      - name: Find JAR file
+        id: find_jar
+        run: |
+          JAR_FILE=$(find target -name '*.jar' | head -n 1)
+          echo "JAR_FILE=$JAR_FILE" >> $GITHUB_ENV
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.JAR_FILE }}
+          asset_name: hamilton-api-v${{ github.run_number }}.jar
+          asset_content_type: application/java-archive
