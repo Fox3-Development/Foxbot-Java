@@ -66,6 +66,18 @@ public class ButtonHandler extends ListenerAdapter {
                     event.reply(String.format("You have accepted the server rules. Please head over to the %s to request onboarding!", welcomeChannel.getAsMention())).setEphemeral(true).queue();
                 }
             }
+            case "cbID" -> {
+                Member interactionUser = event.getMember();
+                Role communityRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Community Member", false).get(0);
+
+                assert interactionUser != null;
+                if (interactionUser.getRoles().stream().anyMatch(role -> role.getName().equals("Community Member"))) {
+                    event.reply("You've already joined the community!").setEphemeral(true).queue();
+                } else if (interactionUser.getRoles().stream().noneMatch(role -> role.getName().equals("Community Member"))) {
+                    event.getGuild().addRoleToMember(interactionUser, communityRole).queue();
+                    event.reply("Welcome to the community! If you are here for the Top Gun tournament or just here to hang out, no further action is required! Welcome to Fox3!").setEphemeral(true).queue();
+                }
+            }
             case "closeID" -> {
                 //EmbedBuilder transcriptEmbed = new EmbedBuilder();
 

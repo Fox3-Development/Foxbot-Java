@@ -1,18 +1,16 @@
 package com.fox3ms;
 
-import com.fox3ms.events.Handlers.ButtonHandler;
-import com.fox3ms.events.Handlers.CommandHandler;
 import com.fox3ms.events.DiscordUtils.MemberJoinEventListener;
 import com.fox3ms.events.DiscordUtils.MemberLeaveEventListener;
 import com.fox3ms.events.DiscordUtils.ReadyEventListener;
+import com.fox3ms.events.Handlers.ButtonHandler;
+import com.fox3ms.events.Handlers.CommandHandler;
 import com.fox3ms.events.Handlers.ModalHandler;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.interactions.commands.Command;
-import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -34,27 +32,27 @@ public class Foxbot {
                         new ButtonHandler(),
                         new ModalHandler()
                 ).build();
+        jda.getPresence().setActivity(Activity.playing("Ready to Fly!"));
 
-        jda.getPresence().setActivity(Activity.playing("Ready to Fly!")); //Sets the online presence for the bot
-
+        jda.upsertCommand("cancel-request", "Moves the ticket to the 'Cancellation Requests' Category").setGuildOnly(true).queue();
+        jda.upsertCommand("setup", "Initializes all sticky messages").setGuildOnly(true).queue();
+        /*jda.upsertCommand("test-db", "Use for testing DB connection and SQL statements").setGuildOnly(true)
+                        .addOption(OptionType.STRING, "value", "enter a value")
+                        .setGuildOnly(true).queue();*/
+        jda.upsertCommand("complete", "Complete customer onboarding. Assigns \"Customer\" role. Closes onboarding ticket.")
+                .addOption(OptionType.USER, "user", "This is the user you want to complete onboarding for", true)
+                .addOption(OptionType.STRING, "server-number", "Provide the user's server number", true)
+                .setGuildOnly(true).queue();
         jda.updateCommands().addCommands(
-                Commands.slash("setup", "Initializes system embeds and buttons")
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
-                        .setGuildOnly(true),
-                Commands.slash("cancel-request", "Moves the ticket to the 'Cancellation Requests' Category")
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
-                        .setGuildOnly(true),
-                Commands.slash("complete", "Completes customer onboarding")
-                        .addOption(OptionType.USER, "user", "The target user to complete onboarding for")
-                        .addOption(OptionType.STRING, "server-number", "Provide the customer's server number")
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
-                        .setGuildOnly(true),
-                Commands.slash("search", "Searches for and displays customer info") // TODO: #1 create jdbc connection and test searching for customers
-                        .addOption(OptionType.STRING, "customer-num", "User to search for")
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
-                        .setGuildOnly(true),
                 Commands.context(Command.Type.USER, "Open a Ticket")
-                        .setGuildOnly(true)
         ).queue();
+
+        //Rewrite the above commands using the below
+        /*jda.updateCommands().addCommands(
+                Commands.slash("cancel-request","Moves the ticket to the 'Cancellation Requests' Category")
+                        .setGuildOnly(true)
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
+                Commands.slash("setup", "Initializes all sticky messages")
+        )*/
     }
 }

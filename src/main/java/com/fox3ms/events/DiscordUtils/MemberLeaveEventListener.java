@@ -19,7 +19,7 @@ public class MemberLeaveEventListener extends ListenerAdapter {
         super.onGuildMemberRemove(event);
         try {
             TextChannel auditLogsChannel = event.getGuild().getTextChannelById("1030481630411898890");
-            String user = Objects.requireNonNull(event.getMember()).getUser().getAsTag();
+            String user = String.valueOf(Objects.requireNonNull(event.getMember()).getUser());
             Member member = event.getMember();
             List<Role> roles = member.getRoles();
             StringBuilder rolesMentionable = new StringBuilder();

@@ -1,6 +1,10 @@
 package com.fox3ms.events.Handlers;
 
+import com.fox3ms.events.Utils.DBConnection;
+import com.fox3ms.events.Utils.IDGenerator;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.IPermissionHolder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -10,7 +14,10 @@ import net.dv8tion.jda.api.managers.channel.concrete.TextChannelManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +28,7 @@ public class ModalHandler extends ListenerAdapter {
         String newLine = System.lineSeparator();
         switch (event.getModalId()) {
             case "omID" -> {
-                String onboardingID = Objects.requireNonNull(event.getMember()).getEffectiveName();
+                String onboardingID = Objects.requireNonNull(event.getMember()).getNickname();
 
                 String custNumInputValue = Objects.requireNonNull(event.getValue("cnID")).getAsString();
                 String serverNumInputValue = Objects.requireNonNull(event.getValue("snID")).getAsString();
@@ -54,11 +61,16 @@ public class ModalHandler extends ListenerAdapter {
                 onboardTicketChannel.sendMessageEmbeds(onboardPanelEmbed.build()).complete();
             }
             case "ticketModalID" -> {
-                String ticketID = Objects.requireNonNull(event.getMember()).getEffectiveName();
+                // TODO: fix ticket ID as username after discord jda issue fixed
+
+                System.out.println(Objects.requireNonNull(event.getMember()));
+//                String ticketID = Objects.requireNonNull(event.getMember()).getNickname();
+                String ticketID = IDGenerator.generateCode();
 
                 String complaintInputValue = Objects.requireNonNull(event.getValue("complaintID")).getAsString();
 
                 String interactionUserID = event.getUser().getAsMention();
+                System.out.println(interactionUserID);
 
                 EmbedBuilder ticketPanelEmbed = new EmbedBuilder()
                         .setColor(Color.RED)
@@ -77,15 +89,31 @@ public class ModalHandler extends ListenerAdapter {
                 Button claimButton = Button.success("claimID", "Claim");
 
                 TextChannel ticketChannel = Objects.requireNonNull(event.getGuild()).createTextChannel("ticket-" + ticketID, event.getGuild().getCategoriesByName("open tickets", true).get(0)).complete();
-                ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager().putPermissionOverride(Objects.requireNonNull(event.getMember()), 3072L, 8192L).putPermissionOverride(event.getGuild().getRolesByName("@everyone", true).get(0), 0L, 1024L);
-                ticketManager.queue();
+                //---------------------------------------------------------------------------
+                /*TextChannel ticketChannel = event.getGuild()
+                        .getCategoriesByName("open tickets", true).get(0)
+                        .createTextChannel("ticket-" + Objects.requireNonNull(event.getMember()).getNickname())
+                        .addPermissionOverride(event.getMember(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null)
+                        .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                        .queue();*/
+
+                ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager().putPermissionOverride(event.getMember(), 3072L, 8192L) .putPermissionOverride(event.getGuild().getPublicRole(), 0L, 1024L);
+//                ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager().putPermissionOverride(Objects.requireNonNull(event.getMember()), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null).putPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
+//                ticketManager.queue();
+                //-----------------------------------------------------------------------
 
                 TextChannel alertChannel = event.getGuild().getTextChannelsByName("fox3-alerts", true).get(0);
                 String staffID = Objects.requireNonNull(event.getGuild().getRolesByName("Fox3 Staff", false).get(0)).getAsMention();
                 alertChannel.sendMessage(String.format("%s, **New Ticket Alert!** | Ticket-" + ticketID + " | Created by: " + interactionUserID, staffID)).queue();
 
-                event.reply("Support Ticket Created! Click " + ticketChannel.getAsMention() + " to open your ticket!").setEphemeral(true).queue();
-                ticketChannel.sendMessageEmbeds(ticketPanelEmbed.build()).setActionRow(closeReasonButton, closeButton, claimButton).complete();
+                EmbedBuilder ticketOpenReplyEmbed = new EmbedBuilder()
+                        .setColor(Color.RED)
+                        .setTitle("Ticket Created!")
+                        .setDescription("Click here to open your ticket!" + ticketChannel.getAsMention());
+
+                event.replyEmbeds(ticketOpenReplyEmbed.build()).setEphemeral(true).queue();
+                ticketChannel.sendMessageEmbeds(ticketPanelEmbed.build()).setActionRow(closeReasonButton, closeButton, claimButton).queue();
+                System.out.println(ticketChannel.getAsMention());
             }
             case "reasonModalID" -> {
                 event.reply("This ticket is closing!").setEphemeral(false).queue();
