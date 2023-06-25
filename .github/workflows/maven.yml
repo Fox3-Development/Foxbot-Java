@@ -118,5 +118,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.JAR_FILE }}
-          asset_name: Foxbot-v${{ github.run_number }}.jar
+          asset_name: Foxbot-v${{ mvn help:evaluate -Dexpression=project.version -q -DforceStdout }}.jar
           asset_content_type: application/java-archive
