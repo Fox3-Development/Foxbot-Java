@@ -39,7 +39,7 @@ public class CommandHandler extends ListenerAdapter {
                 event.getJDA().getUserById(alertUser);
                 ticketChannel.getManager().setParent(cancelParent).queue();
                 event.reply("This ticket has been marked for cancellation! Your service cancellation will be processed by end of day.").setEphemeral(false).queue();
-                alertChannel.sendMessage("<@264270923845074956>, " + event.getChannel().getAsMention() + " is pending cancellation!").queue();
+                alertChannel.sendMessage( "<@" + alertUser + ">" + event.getChannel().getAsMention() + " is pending cancellation!").queue();
             }
             case "setup" -> {
                 TextChannel welcomeChannel = Objects.requireNonNull(event.getGuild()).getTextChannelsByName("welcome", true).get(0);
