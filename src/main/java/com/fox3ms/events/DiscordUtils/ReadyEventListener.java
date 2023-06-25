@@ -20,8 +20,9 @@ public class ReadyEventListener extends ListenerAdapter {
             if (firstReady) {
                 ScheduledExecutorService messageScheduler = Executors.newScheduledThreadPool(1);
                 messageScheduler.scheduleAtFixedRate(() -> {
-                    TextChannel scheduleChannel = event.getJDA().getTextChannelsByName("general", true).get(0);
-                    String eventLink = "https://discord.gg/KfwGnWhZTj?event=1108181089232633967";
+                    TextChannel scheduleChannel = event.getJDA().getTextChannelById("814940459134484514");
+                    String eventLink = "https://discord.gg/GkmbCtXuds?event=1108181089232633967";
+                    assert scheduleChannel != null;
                     scheduleChannel.sendMessage(String.format("Have you heard about the **Fox3 Top Gun Tournament**? Check out the event to sign up! %s", eventLink)).queue();
                 }, 0, 1, TimeUnit.DAYS);
                 firstReady = false;

@@ -1,14 +1,10 @@
 package com.fox3ms.events.DiscordUtils;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
-
-import java.awt.*;
-import java.time.OffsetDateTime;
 
 public class MemberJoinEventListener extends ListenerAdapter {
     @Override

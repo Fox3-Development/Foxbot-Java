@@ -1,6 +1,5 @@
 package com.fox3ms.events.Handlers;
 
-import com.fox3ms.events.Utils.DBConnection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -17,7 +16,6 @@ import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.sql.*;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +34,7 @@ public class CommandHandler extends ListenerAdapter {
                 TextChannel alertChannel = Objects.requireNonNull(event.getGuild()).getTextChannelsByName("fox3-alerts", true).get(0);
                 Category cancelParent = Objects.requireNonNull(event.getGuild()).getCategoriesByName("cancellation requests", true).get(0);
                 TextChannel ticketChannel = event.getGuild().getTextChannelsByName(event.getChannel().getName(), true).get(0);
-                String alertUser = "264270923845074956";
+                String alertUser = "346153268289732609";
                 // String alertUser = DotEnv.Utils.getProperty(SOME_PROPERTY_NAME);
                 event.getJDA().getUserById(alertUser);
                 ticketChannel.getManager().setParent(cancelParent).queue();

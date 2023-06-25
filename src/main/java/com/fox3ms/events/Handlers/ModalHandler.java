@@ -1,10 +1,7 @@
 package com.fox3ms.events.Handlers;
 
-import com.fox3ms.events.Utils.DBConnection;
 import com.fox3ms.events.Utils.IDGenerator;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.IPermissionHolder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -14,10 +11,7 @@ import net.dv8tion.jda.api.managers.channel.concrete.TextChannelManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.OffsetDateTime;
-import java.util.EnumSet;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -97,7 +91,7 @@ public class ModalHandler extends ListenerAdapter {
                         .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
                         .queue();*/
 
-                ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager().putPermissionOverride(event.getMember(), 3072L, 8192L) .putPermissionOverride(event.getGuild().getPublicRole(), 0L, 1024L);
+//                ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager().putPermissionOverride(event.getMember(), 3072L, 8192L) .putPermissionOverride(event.getGuild().getPublicRole(), 0L, 1024L);
 //                ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager().putPermissionOverride(Objects.requireNonNull(event.getMember()), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null).putPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
 //                ticketManager.queue();
                 //-----------------------------------------------------------------------

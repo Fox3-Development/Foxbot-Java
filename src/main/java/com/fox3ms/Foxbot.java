@@ -9,8 +9,9 @@ import com.fox3ms.events.Handlers.ModalHandler;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -18,10 +19,16 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class Foxbot {
     public static void main(String[] args) {
+
+        // Set the bot token with dotenv
         Dotenv dotenv = Dotenv.load();
         String token = dotenv.get("TOKEN");
+
+        // Create the JDA instance and add the bot token to log in
         JDABuilder jdaBuilder = JDABuilder.createDefault(token);
         jdaBuilder.setMemberCachePolicy(MemberCachePolicy.ALL);
+
+        // Include project classes
         JDA jda = jdaBuilder
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS)
                 .addEventListeners(
@@ -32,27 +39,22 @@ public class Foxbot {
                         new ButtonHandler(),
                         new ModalHandler()
                 ).build();
+
+        // Set bot status and presence
         jda.getPresence().setActivity(Activity.playing("Ready to Fly!"));
 
-        jda.upsertCommand("cancel-request", "Moves the ticket to the 'Cancellation Requests' Category").setGuildOnly(true).queue();
-        jda.upsertCommand("setup", "Initializes all sticky messages").setGuildOnly(true).queue();
-        /*jda.upsertCommand("test-db", "Use for testing DB connection and SQL statements").setGuildOnly(true)
-                        .addOption(OptionType.STRING, "value", "enter a value")
-                        .setGuildOnly(true).queue();*/
-        jda.upsertCommand("complete", "Complete customer onboarding. Assigns \"Customer\" role. Closes onboarding ticket.")
-                .addOption(OptionType.USER, "user", "This is the user you want to complete onboarding for", true)
-                .addOption(OptionType.STRING, "server-number", "Provide the user's server number", true)
-                .setGuildOnly(true).queue();
+        // Register all commands
         jda.updateCommands().addCommands(
-                Commands.context(Command.Type.USER, "Open a Ticket")
-        ).queue();
-
-        //Rewrite the above commands using the below
-        /*jda.updateCommands().addCommands(
-                Commands.slash("cancel-request","Moves the ticket to the 'Cancellation Requests' Category")
+                Commands.slash("setup", "Initializes all sticky system messages")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                        .setGuildOnly(true),
+                Commands.slash("cancel-request", "Moves the current ticket to the 'Cancellation Requests' Category then sends an alert")
+                        .setGuildOnly(true),
+                Commands.slash("complete", "Complete customer onboarding. Assigns 'Customer' role and adds server number to their name. Then " +
+                        "closes onboarding ticket")
+                        .addOption(OptionType.USER, "user", "User to complete onboarding for", true)
+                        .addOption(OptionType.STRING, "server-number", "Provide the customer's server number", true)
                         .setGuildOnly(true)
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
-                Commands.slash("setup", "Initializes all sticky messages")
-        )*/
+        ).queue();
     }
 }
