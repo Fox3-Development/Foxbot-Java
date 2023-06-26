@@ -1,4 +1,4 @@
-package com.fox3ms.events.Utils;
+package com.fox3ms.Utils;
 
 import java.util.Random;
 

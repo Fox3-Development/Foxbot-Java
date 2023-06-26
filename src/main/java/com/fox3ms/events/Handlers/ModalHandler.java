@@ -1,6 +1,6 @@
 package com.fox3ms.events.Handlers;
 
-import com.fox3ms.events.Utils.IDGenerator;
+import com.fox3ms.Utils.IDGenerator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;

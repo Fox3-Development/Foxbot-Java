@@ -1,4 +1,4 @@
-package com.fox3ms.events.Utils;
+package com.fox3ms.Utils;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
