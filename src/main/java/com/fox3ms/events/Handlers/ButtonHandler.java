@@ -113,7 +113,7 @@ public class ButtonHandler extends ListenerAdapter {
                     String mentionUser = interactionUser.getAsMention();
 
 
-                    EmbedBuilder claimEmbed =new EmbedBuilder()
+                    EmbedBuilder claimEmbed = new EmbedBuilder()
                         .setColor(Color.BLUE)
                         .setTitle("Claimed Ticket")
                         .setDescription("Your ticket will be handled by " + mentionUser);
@@ -121,6 +121,7 @@ public class ButtonHandler extends ListenerAdapter {
                     Message message = event.getMessage();
 
                     net.dv8tion.jda.api.interactions.components.buttons.Button closeButton = net.dv8tion.jda.api.interactions.components.buttons.Button.secondary("closeID", "Close Ticket");
+					
                     net.dv8tion.jda.api.interactions.components.buttons.Button closeReasonButton = Button.danger("closeReasonID", "Close Ticket With Reason");
 
                     message.editMessageComponents().setActionRow(closeReasonButton, closeButton).queue();
