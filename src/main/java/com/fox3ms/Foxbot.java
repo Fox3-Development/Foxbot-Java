@@ -22,7 +22,7 @@ public class Foxbot {
 
         // Set the bot token with dotenv
         Dotenv dotenv = Dotenv.load();
-        String token = dotenv.get("TOKEN");
+        String token = dotenv.get("TEST_TOKEN");
 
         // Create the JDA instance and add the bot token to log in
         JDABuilder jdaBuilder = JDABuilder.createDefault(token);
