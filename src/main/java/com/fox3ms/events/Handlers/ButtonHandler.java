@@ -55,14 +55,15 @@ public class ButtonHandler extends ListenerAdapter {
             case "rbID" -> {
                 Member interactionUser = event.getMember();
                 Role newCustRole = Objects.requireNonNull(event.getGuild()).getRolesByName("New Customer", false).get(0);
+                TextChannel welcomeChannel = event.getGuild().getTextChannelsByName("welcome", true).get(0);
 
                 assert interactionUser != null;
                 if (interactionUser.getRoles().stream().anyMatch(role -> role.getName().equals("Customers")) || interactionUser.getRoles().stream().anyMatch(role -> role.getName().equals("New Customer"))) {
-                    event.reply("You've already accepted the rules!").setEphemeral(true).queue();
+                    event.reply("You've already accepted the rules! If you need to onboard as a new customer, please click here " + welcomeChannel.getAsMention() + " to get " +
+                            "started").setEphemeral(true).queue();
                 } else if (interactionUser.getRoles().stream().noneMatch(role -> role.getName().equals("New Customer"))) {
                     assert newCustRole != null;
                     event.getGuild().addRoleToMember(interactionUser, newCustRole).queue();
-                    TextChannel welcomeChannel = event.getGuild().getTextChannelsByName("welcome", true).get(0);
                     event.reply(String.format("You have accepted the server rules. Please head over to the %s to request onboarding!", welcomeChannel.getAsMention())).setEphemeral(true).queue();
                 }
             }

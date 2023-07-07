@@ -22,7 +22,7 @@ public class Foxbot {
 
         // Set the bot token with dotenv
         Dotenv dotenv = Dotenv.load();
-        String token = dotenv.get("TEST_TOKEN");
+        String token = dotenv.get("TOKEN");
 
         // Create the JDA instance and add the bot token to log in
         JDABuilder jdaBuilder = JDABuilder.createDefault(token);
@@ -30,7 +30,11 @@ public class Foxbot {
 
         // Include project classes
         JDA jda = jdaBuilder
-                .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(
+                        GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.GUILD_MEMBERS
+                )
                 .addEventListeners(
                         new ReadyEventListener(),
                         new CommandHandler(),
@@ -50,8 +54,7 @@ public class Foxbot {
                         .setGuildOnly(true),
                 Commands.slash("cancel-request", "Moves the current ticket to the 'Cancellation Requests' Category then sends an alert")
                         .setGuildOnly(true),
-                Commands.slash("complete", "Complete customer onboarding. Assigns 'Customer' role and adds server number to their name. Then " +
-                        "closes onboarding ticket")
+                Commands.slash("complete", "Assigns 'Customer' role and adds server number to their name then closes the ticket")
                         .addOption(OptionType.USER, "user", "User to complete onboarding for", true)
                         .addOption(OptionType.STRING, "server-number", "Provide the customer's server number", true)
                         .setGuildOnly(true)

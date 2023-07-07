@@ -2,6 +2,7 @@ package com.fox3ms.events.Handlers;
 
 import com.fox3ms.Utils.IDGenerator;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.time.OffsetDateTime;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +24,7 @@ public class ModalHandler extends ListenerAdapter {
         String newLine = System.lineSeparator();
         switch (event.getModalId()) {
             case "omID" -> {
-                String onboardingID = Objects.requireNonNull(event.getMember()).getNickname();
+                String onboardingID = Objects.requireNonNull(event.getMember()).getEffectiveName();
 
                 String custNumInputValue = Objects.requireNonNull(event.getValue("cnID")).getAsString();
                 String serverNumInputValue = Objects.requireNonNull(event.getValue("snID")).getAsString();
@@ -44,7 +46,15 @@ public class ModalHandler extends ListenerAdapter {
                     .setTimestamp(OffsetDateTime.now());
 
                 TextChannel onboardTicketChannel = Objects.requireNonNull(event.getGuild()).createTextChannel("onboarding-" + onboardingID, event.getGuild().getCategoriesByName("onboarding requests", true).get(0)).complete();
-                ChannelManager<TextChannel, TextChannelManager> onboardManager = onboardTicketChannel.getManager().putPermissionOverride(Objects.requireNonNull(event.getMember()), 3072L, 8192L).putPermissionOverride(event.getGuild().getRolesByName("@everyone", true).get(0), 0L, 1024L);
+                ChannelManager<TextChannel, TextChannelManager> onboardManager = onboardTicketChannel.getManager()
+                        .putPermissionOverride(event.getMember(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY), null)
+                        .putPermissionOverride(event.getGuild().getRolesByName("@everyone", true).get(0), null,
+                                EnumSet.of(Permission.VIEW_CHANNEL))
+                        .putPermissionOverride(Objects.requireNonNull(event.getGuild().getRoleById("1080686304032989234")),
+                                EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_SEND), null)
+                        .putPermissionOverride(Objects.requireNonNull(event.getGuild().getRoleById("1080684124693614654")),
+                                EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY), null);
+
                 onboardManager.queue();
 
                 TextChannel alertChannel = event.getGuild().getTextChannelsByName("fox3-alerts", true).get(0);
@@ -83,18 +93,18 @@ public class ModalHandler extends ListenerAdapter {
                 Button claimButton = Button.success("claimID", "Claim");
 
                 TextChannel ticketChannel = Objects.requireNonNull(event.getGuild()).createTextChannel("ticket-" + ticketID, event.getGuild().getCategoriesByName("open tickets", true).get(0)).complete();
-                //---------------------------------------------------------------------------
-                /*TextChannel ticketChannel = event.getGuild()
-                        .getCategoriesByName("open tickets", true).get(0)
-                        .createTextChannel("ticket-" + Objects.requireNonNull(event.getMember()).getNickname())
-                        .addPermissionOverride(event.getMember(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null)
-                        .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
-                        .queue();*/
 
-//                ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager().putPermissionOverride(event.getMember(), 3072L, 8192L) .putPermissionOverride(event.getGuild().getPublicRole(), 0L, 1024L);
-//                ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager().putPermissionOverride(Objects.requireNonNull(event.getMember()), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null).putPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
-//                ticketManager.queue();
-                //-----------------------------------------------------------------------
+                ChannelManager<TextChannel, TextChannelManager> ticketManager = ticketChannel.getManager()
+                        .putPermissionOverride(Objects.requireNonNull(event.getMember()),
+                                EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null)
+                        .putPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                        .putPermissionOverride(Objects.requireNonNull(event.getGuild().getRoleById("1080686304032989234")),
+                                EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY), null)
+                        .putPermissionOverride(Objects.requireNonNull(event.getGuild().getRoleById("1080684124693614654")),
+                                EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY), null);
+
+
+                ticketManager.queue();
 
                 TextChannel alertChannel = event.getGuild().getTextChannelsByName("fox3-alerts", true).get(0);
                 String staffID = Objects.requireNonNull(event.getGuild().getRolesByName("Fox3 Staff", false).get(0)).getAsMention();

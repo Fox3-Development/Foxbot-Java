@@ -64,14 +64,33 @@ public class CommandHandler extends ListenerAdapter {
 
                 welcomeChannel.sendMessageEmbeds(welcomeEmbed.build()).setActionRow(welcomeButton).complete();
 
-                String rulesValue = "**1.** Be kind to other people here" + newLine + newLine + "**2**. Please do not discuss politics or religion" + newLine + newLine + "**3.** We are currently developing a feedback system. Until then, please open a support ticket to leave critical feedback about Fox3" + newLine + newLine + "**4.** Keep any jokes or memes to a clean level where one of my kids can see it" + newLine + newLine + "**5.** Please keep complaints of DCS to a minimum, those should be directed to Eagle Dynamics." + newLine + newLine + "**6.** We are a ~~small~~ medium sized community of DCS players, we should always be welcoming to everyone, including new players." + newLine + newLine + "**7.** Please review all pinned messages in <#814959240238071830> - that will help if you are a customer" + newLine + newLine + "**-Fox3 Staff**" + newLine + newLine + "**Note**" + newLine + newLine + "If you are a new customer and need to be onboarded, please press 'I ACCEPT'." + newLine + newLine + "If you are not a new customer, and wish to join our community, please press 'Join Community'." + newLine + newLine + "For non-customers joining for the Top Gun Tournament, please join the community!";
-
                 EmbedBuilder rulesEmbed = new EmbedBuilder()
                     .setColor(Color.RED)
                     .setTitle("Fox3 Managed Solutions Discord Rules")
                     .setDescription("Welcome to Fox3 Managed Solutions! Below you will find a short list of rules we ask you to follow.")
                     .addBlankField(false)
-                    .addField("Discord Server Rules", rulesValue, false)
+                    .addField("Discord Server Rules", """
+                            **1.** Be kind to other people here
+
+                            **2**. Please do not discuss politics or religion
+
+                            **3.** We are currently developing a feedback system. Until then, please open a support ticket to leave critical feedback about Fox3
+
+                            **4.** Keep any jokes or memes to a clean level where one of my kids can see it
+
+                            **5.** Please keep complaints of DCS to a minimum, those should be directed to Eagle Dynamics.
+
+                            **6.** We are a ~~small~~ medium sized community of DCS players, we should always be welcoming to everyone, including new players.
+
+                            **7.** Please review all pinned messages in `#welcome` channel - that will help if you are a customer
+
+                            **-Fox3 Staff**
+
+                            **Note**
+
+                            If you are a new customer and need to be onboarded, please press 'I ACCEPT'.
+
+                            If are not a new customer, and wish to join our community, please press 'Join Community'.""", false)
                     .addBlankField(false)
                     .setThumbnail("https://static.wixstatic.com/media/54345b_9266a83269ec41dbadf793899fba1030~mv2.png/v1/fill/w_433,h_243,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/RedCard.png");
 
@@ -124,7 +143,7 @@ public class CommandHandler extends ListenerAdapter {
                     e.printStackTrace();
                 }
 
-                String newUser = userValue.getUser().getName() + " | " + serverNumberValue;
+                String newUser = userValue.getUser().getEffectiveName() + " | " + serverNumberValue;
                 userValue.modifyNickname(newUser).queue();
                 String newMember = userValue.getUser().getAsMention();
 
